@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,12 +39,14 @@ public class ArticlesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         TextView article_title;
         ImageView article_thumbnail;
+        Button articleFullView;
         MaterialFavoriteButton favoriteButton;
 
         public ArticleViewHolder(View itemView) {
             super(itemView);
             article_title = (TextView) itemView.findViewById(R.id.article_title);
             article_thumbnail = (ImageView) itemView.findViewById(R.id.article_thumbnail);
+            articleFullView = (Button) itemView.findViewById(R.id.articleFullView);
             favoriteButton = (MaterialFavoriteButton) itemView.findViewById(R.id.favoritButton);
         }
     }
@@ -96,8 +99,14 @@ public class ArticlesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             // loading album cover using Glide library
             Glide.with(context).load(article.imgsrc).into(articleViewHolder.article_thumbnail);
 
-            articleViewHolder.favoriteButton.setFavorite(result.get(0).isFav, true);
+            articleViewHolder.articleFullView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG,"Click on Show Article position "+ position);
+                }
+            });
 
+            articleViewHolder.favoriteButton.setFavorite(result.get(0).isFav, true);
             articleViewHolder.favoriteButton.setOnFavoriteChangeListener(
                     new MaterialFavoriteButton.OnFavoriteChangeListener() {
                         @Override

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "634797132259",
+    "firebase_url": "https://cop22-3e27c.firebaseio.com",
+    "project_id": "cop22-3e27c",
+    "storage_bucket": "cop22-3e27c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634797132259:android:5710137e4ca83cc8",
+        "android_client_info": {
+          "package_name": "society.aqua.cop22"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "634797132259-nlnjvjiivud5u6628u8l87h15r5o71fo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIMGrbn1znnGqqshVoYM8QNkEmZwiZFdQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

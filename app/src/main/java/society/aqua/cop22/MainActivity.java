@@ -12,6 +12,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -57,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView_articles.setLayoutManager(new LinearLayoutManager(this));
         adapter_articles = new ArticlesAdapter(new ArrayList<Entry>(),this,mRealm);
         recyclerView_articles.setAdapter(adapter_articles);
+
+        //Add Initialisation
+        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.banner_ad_unit_id));
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override
@@ -110,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 eventType = response.next();
                             }
-
-                            Log.d(LOG_TAG,"Articles size : "+ entryList.size());
                             adapter_articles.update(entryList);
 
                         } catch (XmlPullParserException e) {
@@ -133,41 +140,33 @@ public class MainActivity extends AppCompatActivity {
     public void SerializeEntry(List<TagValue> entry){
         Entry entry_Ser = new Entry();
         for(int i = 0; i< entry.size(); i++){
-            Log.d(LOG_TAG, "TAG NAME : "+entry.get(i).Tag);
             switch (entry.get(i).Tag){
                 case "title" :
                     if(!entry.get(i).value.equals("") && entry.get(i).value != null && entry.get(i).value.length() > 4){
-                        Log.d(LOG_TAG, "title : "+ entry.get(i).value.length() +"  Data : " + entry.get(i).value);
                         entry_Ser.title = entry.get(i).value;
                     } break;
                 case "id" :
                     if(!entry.get(i).value.equals("") && entry.get(i).value != null && entry.get(i).value.length() > 4){
-                        Log.d(LOG_TAG, "id : "+ entry.get(i).value.length() +"  Data : " + entry.get(i).value);
                         entry_Ser.id = entry.get(i).value;
                     } break;
                 case "photo:imgsrc" :
                     if(!entry.get(i).value.equals("") && entry.get(i).value != null && entry.get(i).value.length() > 4){
-                        Log.d(LOG_TAG, "imgsrc : "+ entry.get(i).value.length() +"  Data : " + entry.get(i).value);
                         String imageDefault = entry.get(i).value.replace("imagette", "default");
                         entry_Ser.imgsrc = imageDefault;
                     } break;
                 case "published" :
                     if(!entry.get(i).value.equals("") && entry.get(i).value != null && entry.get(i).value.length() > 4){
-                        Log.d(LOG_TAG, "published : "+ entry.get(i).value.length() +"  Data : " + entry.get(i).value);
                         entry_Ser.published = entry.get(i).value;
                     } break;
                 case "name" :
                     if(!entry.get(i).value.equals("") && entry.get(i).value != null && entry.get(i).value.length() > 4){
-                        Log.d(LOG_TAG, "author name : "+ entry.get(i).value.length() +"  Data : " + entry.get(i).value);;
                         Author author = new Author();
                         author.name = entry.get(i).value;
                         entry_Ser.author = author;
                     } break;
                 case "content" :
                     if(!entry.get(i).value.equals("") && entry.get(i).value != null && entry.get(i).value.length() > 4){
-                        Log.d(LOG_TAG, "content length : "+ entry.get(i).value.length() +"  Data : " + entry.get(i).value);
                         entry_Ser.content = entry.get(i).value;
-                        Log.d(LOG_TAG, "*************************** Start New Entry object **********************");
                     } break;
             }
         }

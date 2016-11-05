@@ -14,6 +14,8 @@ import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import society.aqua.cop22.Modules.Entry;
 import society.aqua.cop22.R;
 
@@ -23,6 +25,7 @@ import society.aqua.cop22.R;
 
 public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ArticleViewHolder> {
 
+    private Realm realm;
     private List<Entry> articleList;
     private Context context;
     private final String LOG_TAG = "Article_Adapter";
@@ -42,9 +45,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     }
 
 
-    public ArticlesAdapter(List<Entry> articles, Context context) {
+    public ArticlesAdapter(List<Entry> articles, Context context, Realm realm) {
         this.articleList = articles;
         this.context = context;
+        this.realm = realm;
     }
 
     @Override
@@ -57,17 +61,27 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     @Override
     public void onBindViewHolder(ArticleViewHolder holder, final int position) {
         final Entry article = this.articleList.get(position);
-        Log.d(LOG_TAG, "Binding article : " + article.id);
+        RealmResults<Entry> result = realm.where(Entry.class)
+                .equalTo("id", article.id)
+                .findAll();
+
+        Log.d(LOG_TAG, "Binding article From Realm: " + result.get(0).id);
 
         holder.article_title.setText(article.title);
         // loading album cover using Glide library
         Glide.with(context).load(article.imgsrc).into(holder.article_thumbnail);
 
+        holder.favoriteButton.setFavorite(result.get(0).isFav, true);
+
         holder.favoriteButton.setOnFavoriteChangeListener(
                 new MaterialFavoriteButton.OnFavoriteChangeListener() {
                     @Override
                     public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-                        Log.d(LOG_TAG, "Favorit Article : "+ position + " ID : "+ article.id);
+                        article.isFav = favorite;
+                        realm.beginTransaction();
+                        realm.copyToRealmOrUpdate(article);
+                        realm.commitTransaction();
+                        Log.d(LOG_TAG, "Favorite Article : "+ position + " IsFav : "+ favorite);
                     }
                 });
     }

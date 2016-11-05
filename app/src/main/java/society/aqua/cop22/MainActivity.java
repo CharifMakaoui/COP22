@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmQuery;
 import society.aqua.cop22.Adapters.ArticlesAdapter;
 import society.aqua.cop22.Modules.Author;
 import society.aqua.cop22.Modules.Entry;
@@ -30,6 +33,8 @@ import society.aqua.cop22.Utils.XMLRequest;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Realm mRealm;
+
     private String LOG_TAG = "Home_Page";
     private String URL_PAGE = "xml/atom.xml";
     private List<Entry> entryList = new ArrayList<>();
@@ -38,10 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView_articles;
     ArticlesAdapter adapter_articles;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    private void init(){
+        Realm.init(this);
+        mRealm = Realm.getDefaultInstance();
 
         String URL = KEYS.BASE_URL + URL_PAGE;
         RequestGet(URL);
@@ -51,8 +55,16 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView_articles = (RecyclerView) findViewById(R.id.list_articles);
         recyclerView_articles.setLayoutManager(new LinearLayoutManager(this));
-        adapter_articles = new ArticlesAdapter(new ArrayList<Entry>(),this);
+        adapter_articles = new ArticlesAdapter(new ArrayList<Entry>(),this,mRealm);
         recyclerView_articles.setAdapter(adapter_articles);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        init();
     }
 
     public void RequestGet(String URL){
@@ -160,5 +172,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         entryList.add(entry_Ser);
+        if(!checkIfExists(entry_Ser.id)){
+            mRealm.beginTransaction();
+            Entry entryDB = mRealm.copyToRealm(entry_Ser);
+            mRealm.commitTransaction();
+        }
+
+
+    }
+
+    public boolean checkIfExists(String id){
+
+        RealmQuery<Entry> query = mRealm.where(Entry.class)
+                .equalTo("id", id);
+
+        return query.count() != 0;
     }
 }

@@ -1,6 +1,7 @@
 package society.aqua.cop22.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,13 +15,16 @@ import com.bumptech.glide.Glide;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import society.aqua.cop22.ArticleActivity;
 import society.aqua.cop22.Modules.Entry;
 import society.aqua.cop22.R;
+import society.aqua.cop22.Utils.KEYS;
 
 import static com.google.ads.AdRequest.TEST_EMULATOR;
 
@@ -102,6 +106,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             articleViewHolder.articleFullView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent intent = new Intent(context,ArticleActivity.class);
+                    intent.putExtra(KEYS.ARTICLE_ID , article.id);
+                    context.startActivity(intent);
+
                     Log.d(LOG_TAG,"Click on Show Article position "+ position);
                 }
             });

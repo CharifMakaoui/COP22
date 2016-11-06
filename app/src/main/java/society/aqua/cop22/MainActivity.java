@@ -1,11 +1,17 @@
 package society.aqua.cop22;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.RelativeLayout;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -38,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Realm mRealm;
 
+    RelativeLayout splashScreen;
+
     private String LOG_TAG = "Home_Page";
     private String URL_PAGE = "xml/atom.xml";
     private List<Entry> entryList = new ArrayList<>();
@@ -52,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         String URL = KEYS.BASE_URL + URL_PAGE;
         RequestGet(URL);
+
+        splashScreen = (RelativeLayout) findViewById(R.id.splashScreen);
 
         toolbar = (Toolbar) findViewById(R.id.app_bare);
         setSupportActionBar(toolbar);
@@ -119,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 eventType = response.next();
                             }
+                            SlideSplashToAbove();
                             adapter_articles.update(entryList);
 
                         } catch (XmlPullParserException e) {
@@ -186,5 +197,20 @@ public class MainActivity extends AppCompatActivity {
                 .equalTo("id", id);
 
         return query.count() != 0;
+    }
+
+    public void SlideSplashToAbove() {
+
+        splashScreen.animate()
+                .translationY(splashScreen.getHeight())
+                .setDuration(1500)
+                .alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        splashScreen.setVisibility(View.GONE);
+                    }
+                });
     }
 }

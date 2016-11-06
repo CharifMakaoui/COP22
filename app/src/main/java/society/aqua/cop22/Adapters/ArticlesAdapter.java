@@ -3,7 +3,6 @@ package society.aqua.cop22.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.NativeExpressAdView;
-import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.List;
 
@@ -100,17 +98,26 @@ public class ArticlesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
             articleViewHolder.article_title.setText(article.title);
+            articleViewHolder.article_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startArticleFull(article.id);
+                }
+            });
+
             // loading album cover using Glide library
             Glide.with(context).load(article.imgsrc).into(articleViewHolder.article_thumbnail);
+            articleViewHolder.article_thumbnail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startArticleFull(article.id);
+                }
+            });
 
             articleViewHolder.articleFullView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context,ArticleActivity.class);
-                    intent.putExtra(KEYS.ARTICLE_ID , article.id);
-                    context.startActivity(intent);
-
-                    Log.d(LOG_TAG,"Click on Show Article position "+ position);
+                    startArticleFull(article.id);
                 }
             });
 
@@ -126,6 +133,12 @@ public class ArticlesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     });
         }
+    }
+
+    private void startArticleFull(String id){
+        Intent intent = new Intent(context,ArticleActivity.class);
+        intent.putExtra(KEYS.ARTICLE_ID , id);
+        context.startActivity(intent);
     }
 
     @Override
